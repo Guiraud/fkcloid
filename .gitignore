@@ -1,0 +1,17 @@
+*.log
+logs/
+.env
+.DS_Store
+node_modules/
+virtualenv/
+kilocode.json
+
+# Dossiers clients IA (cache/état local)
+.cursor/
+.windsurf/
+.codeium/
+.continue/
+.aider*
+
+# Secrets locaux
+VAULT_LOCAL.md
