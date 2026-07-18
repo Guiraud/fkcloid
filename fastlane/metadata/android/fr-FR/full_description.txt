@@ -1,0 +1,24 @@
+FkCloud Share permet d'envoyer des documents vers un serveur rmfakecloud
+auto-hébergé (l'alternative libre au cloud reMarkable®,
+https://github.com/ddvk/rmfakecloud) directement depuis le menu de
+partage d'Android.
+
+Fonctionnalités :
+
+* Apparaît dans le menu de partage pour les fichiers PDF et EPUB
+  (un ou plusieurs à la fois)
+* Choix du dossier de destination dans votre bibliothèque reMarkable
+  avant l'envoi
+* Fonctionne avec toute instance rmfakecloud en HTTPS (HTTP possible
+  pour un usage LAN, mais explicitement opt-in et déconseillé)
+* Identifiants et jeton de session chiffrés avec une clé stockée dans
+  l'Android Keystore (matérielle quand disponible)
+* Pas de pisteurs, pas de statistiques, pas de services Google —
+  l'application ne parle qu'au serveur que vous configurez
+
+Mise en route : ouvrez l'application une fois, saisissez l'URL du
+serveur ainsi que l'identifiant et le mot de passe de l'interface web
+rmfakecloud, puis partagez un PDF ou EPUB depuis une autre application
+et choisissez « FkCloud Share ».
+
+Cette application n'est pas affiliée à reMarkable AS.

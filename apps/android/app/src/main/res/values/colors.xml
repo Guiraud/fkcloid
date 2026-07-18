@@ -1,0 +1,14 @@
+<resources>
+    <!-- Charte "Registre libre" — thème clair -->
+    <color name="registre_background">#F6F2E9</color>
+    <color name="registre_surface">#FFFCF5</color>
+    <color name="registre_on_surface">#22201C</color>
+    <color name="registre_primary">#345A7E</color>
+    <color name="registre_on_primary">#FFFFFF</color>
+    <color name="registre_accent">#8E3B2E</color>
+    <color name="registre_error">#A9362B</color>
+    <color name="registre_outline">#726B61</color>
+
+    <!-- Icône adaptive -->
+    <color name="icon_background">#345A7E</color>
+</resources>

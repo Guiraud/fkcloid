@@ -1,0 +1,120 @@
+<resources>
+    <!-- Charte "Registre libre" : coins 2-4dp, filets, aucune ombre décorative -->
+    <style name="ShapeAppearanceOverlay.FkCloud.Corner4dp" parent="">
+        <item name="cornerSizeTopLeft">4dp</item>
+        <item name="cornerSizeTopRight">4dp</item>
+        <item name="cornerSizeBottomLeft">4dp</item>
+        <item name="cornerSizeBottomRight">4dp</item>
+    </style>
+
+    <style name="Widget.FkCloud.Button" parent="Widget.Material3.Button">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.FkCloud.Corner4dp</item>
+        <item name="fontFamily">@font/font_interface</item>
+        <item name="android:fontFamily">@font/font_interface</item>
+    </style>
+
+    <style name="Widget.FkCloud.Button.TextButton" parent="Widget.Material3.Button.TextButton">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.FkCloud.Corner4dp</item>
+        <item name="fontFamily">@font/font_interface</item>
+        <item name="android:fontFamily">@font/font_interface</item>
+    </style>
+
+    <!-- Outlined : fond uni, filet fin, aucune élévation.
+         stateListAnimator=@null : sans ça, le state-list-animator par défaut de
+         Material3 réapplique une élévation au repos qui teinte colorSurface avec
+         colorPrimary (tonal elevation overlay), même avec cardElevation=0dp. -->
+    <style name="Widget.FkCloud.CardView" parent="Widget.Material3.CardView.Outlined">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.FkCloud.Corner4dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="cardElevation">0dp</item>
+    </style>
+
+    <style name="TextAppearance.FkCloud.Title" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/font_title</item>
+        <item name="android:fontFamily">@font/font_title</item>
+    </style>
+
+    <style name="TextAppearance.FkCloud.DialogTitle" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/font_title</item>
+        <item name="android:fontFamily">@font/font_title</item>
+    </style>
+
+    <style name="TextAppearance.FkCloud.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/font_interface</item>
+        <item name="android:fontFamily">@font/font_interface</item>
+    </style>
+
+    <style name="TextAppearance.FkCloud.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/font_interface</item>
+        <item name="android:fontFamily">@font/font_interface</item>
+    </style>
+
+    <style name="TextAppearance.FkCloud.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/font_interface</item>
+        <item name="android:fontFamily">@font/font_interface</item>
+    </style>
+
+    <style name="TextAppearance.FkCloud.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/font_interface</item>
+        <item name="android:fontFamily">@font/font_interface</item>
+    </style>
+
+    <style name="TextAppearance.FkCloud.Code" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/font_code</item>
+        <item name="android:fontFamily">@font/font_code</item>
+    </style>
+
+    <style name="Theme.FkCloud" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/registre_primary</item>
+        <item name="colorOnPrimary">@color/registre_on_primary</item>
+        <item name="colorSecondary">@color/registre_accent</item>
+        <item name="colorError">@color/registre_error</item>
+        <item name="android:colorBackground">@color/registre_background</item>
+        <item name="colorSurface">@color/registre_surface</item>
+        <item name="colorOnSurface">@color/registre_on_surface</item>
+        <item name="colorOnBackground">@color/registre_on_surface</item>
+        <item name="colorOutline">@color/registre_outline</item>
+        <item name="colorOutlineVariant">@color/registre_outline</item>
+
+        <item name="materialButtonStyle">@style/Widget.FkCloud.Button</item>
+        <item name="materialCardViewStyle">@style/Widget.FkCloud.CardView</item>
+
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.FkCloud.Title</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.FkCloud.DialogTitle</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.FkCloud.TitleSmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.FkCloud.LabelLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.FkCloud.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.FkCloud.BodySmall</item>
+    </style>
+
+    <style name="Theme.FkCloud.Dialog" parent="Theme.Material3.DayNight.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="colorPrimary">@color/registre_primary</item>
+        <item name="colorOnPrimary">@color/registre_on_primary</item>
+        <item name="colorSecondary">@color/registre_accent</item>
+        <item name="colorError">@color/registre_error</item>
+        <item name="android:colorBackground">@color/registre_background</item>
+        <item name="colorSurface">@color/registre_surface</item>
+        <item name="colorOnSurface">@color/registre_on_surface</item>
+        <item name="colorOnBackground">@color/registre_on_surface</item>
+        <item name="colorOutline">@color/registre_outline</item>
+        <item name="colorOutlineVariant">@color/registre_outline</item>
+
+        <item name="materialButtonStyle">@style/Widget.FkCloud.Button</item>
+        <item name="materialCardViewStyle">@style/Widget.FkCloud.CardView</item>
+
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.FkCloud.Title</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.FkCloud.DialogTitle</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.FkCloud.TitleSmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.FkCloud.LabelLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.FkCloud.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.FkCloud.BodySmall</item>
+
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+</resources>

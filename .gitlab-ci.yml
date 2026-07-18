@@ -1,0 +1,93 @@
+stages:
+  - lint
+  - test
+  - build
+  - release
+
+variables:
+  CARGO_HOME: "$CI_PROJECT_DIR/.cargo"
+
+cache:
+  paths:
+    - .cargo/
+    - target/
+    - apps/desktop/node_modules/
+
+# ==========================================
+# LINT & TEST STAGES
+# ==========================================
+clippy:
+  stage: lint
+  image: rust:1.80-slim
+  script:
+    - cargo clippy --all-targets -- -D warnings
+
+test-core:
+  stage: test
+  image: rust:1.80-slim
+  script:
+    - cd core
+    - cargo test --verbose
+
+# ==========================================
+# BUILD STAGE (Desktop Clients)
+# ==========================================
+build-macos:
+  stage: build
+  tags:
+    - saas-macos-medium-m1 # standard GitLab SaaS macOS runner
+  script:
+    - cd apps/desktop
+    - npm install
+    - npm run tauri build
+    - shasum -a 256 src-tauri/target/release/bundle/dmg/*.dmg > SHA256SUMS-mac.txt
+  artifacts:
+    paths:
+      - apps/desktop/src-tauri/target/release/bundle/dmg/*.dmg
+      - apps/desktop/SHA256SUMS-mac.txt
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_TAG
+
+build-windows:
+  stage: build
+  tags:
+    - windows # standard GitLab Windows runner
+  script:
+    - cd apps/desktop
+    - npm install
+    - npm run tauri build
+    # Calculate checksum on Windows
+    - powershell -Command "Get-FileHash src-tauri/target/release/bundle/msi/*.msi -Algorithm SHA256 | Format-List > SHA256SUMS-win.txt"
+  artifacts:
+    paths:
+      - apps/desktop/src-tauri/target/release/bundle/msi/*.msi
+      - apps/desktop/SHA256SUMS-win.txt
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_TAG
+
+# ==========================================
+# RELEASE STAGE
+# ==========================================
+create-release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - build-macos
+    - build-windows
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Creating release for $CI_COMMIT_TAG"
+  release:
+    name: "FkCloud Share $CI_COMMIT_TAG"
+    description: "Release de FkCloud Share client Desktop version $CI_COMMIT_TAG. Retrouvez les sommes de contrôle SHA256 dans les fichiers de release."
+    tag_name: "$CI_COMMIT_TAG"
+    ref: "$CI_COMMIT_SHA"
+    assets:
+      links:
+        - name: "macOS Installer (DMG)"
+          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/fkcloud-share/${CI_COMMIT_TAG}/FkCloud_Share_${CI_COMMIT_TAG}_aarch64.dmg"
+        - name: "Windows Installer (MSI)"
+          url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/fkcloud-share/${CI_COMMIT_TAG}/FkCloud_Share_${CI_COMMIT_TAG}_x64.msi"

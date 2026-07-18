@@ -1,0 +1,43 @@
+<resources>
+    <string name="settings_title">Serveur rmfakecloud</string>
+    <string name="hint_server">URL du serveur (https://…)</string>
+    <string name="hint_email">Identifiant / e-mail</string>
+    <string name="hint_password">Mot de passe</string>
+    <string name="allow_http">Autoriser HTTP non sécurisé (LAN uniquement, déconseillé)</string>
+    <string name="save_and_test">Enregistrer &amp; tester la connexion</string>
+    <string name="usage_hint">Ensuite, partagez un PDF ou EPUB depuis n’importe quelle application et choisissez « FkCloud Share » pour l’envoyer vers votre serveur rmfakecloud.</string>
+
+    <string name="status_fill_all_fields">Renseignez le serveur, l’identifiant et le mot de passe.</string>
+    <string name="status_connecting">Connexion…</string>
+    <string name="status_connected">✔ Connecté — vous pouvez maintenant partager des documents.</string>
+    <string name="share_hint_icon_description">Icône FkCloud Share</string>
+    <string name="share_hint_title">Repérez cette icône</string>
+    <string name="share_hint_body">Ouvrez un PDF ou EPUB dans une autre application, appuyez sur Partager, puis choisissez cette icône (« FkCloud Share ») dans la liste.</string>
+    <string name="status_bad_credentials">Identifiant ou mot de passe incorrect.</string>
+    <string name="status_http_forbidden">HTTP désactivé. Utilisez https:// ou activez l’option HTTP.</string>
+    <string name="status_no_server">Aucun serveur configuré. Ouvrez d’abord FkCloud Share.</string>
+    <string name="status_no_credentials">Aucun identifiant enregistré. Ouvrez d’abord FkCloud Share.</string>
+    <string name="status_error">Erreur : %1$s</string>
+
+    <string name="share_title">Partager avec FkCloud Share</string>
+    <string name="share_nothing">Rien à partager.</string>
+    <string name="share_unsupported_warning">Type de fichier peut-être non pris en charge (le serveur accepte PDF/EPUB) : %1$s</string>
+    <string name="folder_label">Destination</string>
+    <string name="folder_root">Racine (Mes fichiers)</string>
+    <string name="upload">Envoyer</string>
+    <string name="close">Fermer</string>
+    <string name="share_success">CLASSÉ · %1$s</string>
+    <string name="share_errors">Certains envois ont échoué :\n%1$s</string>
+    <string name="change_folder">Changer</string>
+
+    <string name="folder_picker_title">Choisir un dossier</string>
+    <string name="folder_picker_select">Sélectionner ce dossier</string>
+    <string name="folder_picker_chevron">›</string>
+    <string name="folder_picker_loading">Chargement…</string>
+    <string name="folder_picker_empty">Aucun sous-dossier ici.</string>
+    <string name="folder_picker_error">Erreur : %1$s</string>
+
+    <string name="open_file_manager">Ouvrir le gestionnaire de fichiers (web)</string>
+    <string name="file_manager_title">rmfakecloud</string>
+    <string name="file_manager_load_error">Impossible de charger %1$s\n\n%2$s</string>
+</resources>

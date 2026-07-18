@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">FkCloud Share</string>
+    <string name="settings_title">rmfakecloud server</string>
+    <string name="hint_server">Server URL (https://…)</string>
+    <string name="hint_email">Username / email</string>
+    <string name="hint_password">Password</string>
+    <string name="allow_http">Allow insecure HTTP (LAN only, not recommended)</string>
+    <string name="save_and_test">Save &amp; test connection</string>
+    <string name="usage_hint">Then share a PDF or EPUB from any app and pick “FkCloud Share” to send it to your rmfakecloud server.</string>
+
+    <string name="status_fill_all_fields">Please fill in server, username and password.</string>
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_connected">✔ Connected — you can now share documents.</string>
+    <string name="share_hint_icon_description">FkCloud Share icon</string>
+    <string name="share_hint_title">Look for this icon</string>
+    <string name="share_hint_body">Open a PDF or EPUB in another app, tap Share, then pick this icon (“FkCloud Share”) from the list.</string>
+    <string name="status_bad_credentials">Wrong username or password.</string>
+    <string name="status_http_forbidden">HTTP is disabled. Use https:// or enable the HTTP option.</string>
+    <string name="status_no_server">No server configured. Open FkCloud Share first.</string>
+    <string name="status_no_credentials">No credentials saved. Open FkCloud Share first.</string>
+    <string name="status_error">Error: %1$s</string>
+
+    <string name="share_title">Share with FkCloud Share</string>
+    <string name="share_nothing">Nothing to share.</string>
+    <string name="share_unsupported_warning">Possibly unsupported file type (server accepts PDF/EPUB): %1$s</string>
+    <string name="folder_label">Destination</string>
+    <string name="folder_root">Root (My files)</string>
+    <string name="upload">Send</string>
+    <string name="close">Close</string>
+    <string name="share_success">FILED · %1$s</string>
+    <string name="share_errors">Some uploads failed:\n%1$s</string>
+    <string name="change_folder">Change</string>
+
+    <string name="folder_picker_title">Choose a folder</string>
+    <string name="folder_picker_select">Select this folder</string>
+    <string name="folder_picker_chevron">›</string>
+    <string name="folder_picker_loading">Loading…</string>
+    <string name="folder_picker_empty">No subfolders here.</string>
+    <string name="folder_picker_error">Error: %1$s</string>
+
+    <string name="open_file_manager">Open web file manager</string>
+    <string name="file_manager_title">rmfakecloud</string>
+    <string name="file_manager_load_error">Could not load %1$s\n\n%2$s</string>
+</resources>

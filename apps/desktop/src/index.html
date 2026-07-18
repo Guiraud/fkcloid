@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FkCloud Share</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+    <!-- 1. LOGIN SCREEN -->
+    <div id="login-screen" class="screen">
+      <div class="card">
+        <h1>FkCloud Share</h1>
+        <p>Partagez vos documents avec votre reMarkable</p>
+        
+        <form id="login-form">
+          <div class="form-group">
+            <label for="input-host">Adresse du Serveur</label>
+            <input type="url" id="input-host" class="form-input" placeholder="https://rm-cloud.example.invalid" value="https://rm-cloud.example.invalid" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="input-username">Identifiant (Email ou Nom d'utilisateur)</label>
+            <input type="text" id="input-username" class="form-input" placeholder="user.example" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="input-password">Mot de passe</label>
+            <input type="password" id="input-password" class="form-input" placeholder="••••••••" required />
+          </div>
+          
+          <button type="submit" class="btn-primary" id="btn-login-submit">
+            Se connecter
+          </button>
+        </form>
+        
+        <div id="login-error" class="error-msg"></div>
+      </div>
+    </div>
+
+    <!-- 2. MAIN APP SCREEN -->
+    <div id="app-screen" class="screen hidden">
+      <header>
+        <h2>FkCloud Share</h2>
+        <div class="user-info">
+          <div class="user-details">
+            <div id="user-username-display" class="user-email">...</div>
+            <div id="server-host-display" class="server-host">...</div>
+          </div>
+          <button id="btn-settings" class="btn-secondary" style="padding: 6px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;" title="Paramètres">
+            <span>⚙️</span>
+          </button>
+          <button id="btn-logout" class="btn-secondary">
+            <span>Déconnexion</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="main-grid">
+        <!-- Left Pane: Folder Navigation & Sync -->
+        <div class="left-pane">
+          <div class="pane-header">
+            <span class="pane-title">Dossiers</span>
+            <button id="btn-new-folder" class="btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;">
+              <span>+ Créer</span>
+            </button>
+          </div>
+          
+          <div class="tree-container" id="folder-tree">
+            <!-- Loaded dynamically -->
+          </div>
+          
+          <div class="pane-footer">
+            <button id="btn-sync" class="btn-primary" style="padding: 10px 14px; font-size: 0.85rem;">
+              <span>🔄 Synchroniser tablette</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Pane: Drop Zone & Upload queue -->
+        <div class="right-pane">
+          <!-- Active Folder Display / Dropzone -->
+          <div class="drop-zone" id="drop-zone">
+            <div class="drop-zone-icon">📥</div>
+            <h3>Déposez vos fichiers ici</h3>
+            <p>PDF, EPUB et Markdown</p>
+            <div class="target-badge">
+              Cible : <span id="active-folder-name">Racine</span>
+            </div>
+          </div>
+
+          <!-- Queue container -->
+          <div class="queue-container">
+            <div class="pane-header">
+              <span class="pane-title">File d'envoi</span>
+              <button id="btn-clear-queue" class="btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;">
+                <span>Vider</span>
+              </button>
+            </div>
+            
+            <div class="queue-list" id="queue-list">
+              <div class="queue-empty" id="queue-empty">
+                <span>Aucun envoi en cours ou terminé</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. DRAG OVERLAY -->
+    <div id="drag-overlay" class="drag-overlay hidden">
+      <div class="drag-overlay-content">
+        <div class="drag-overlay-icon">🚀</div>
+        <h2>Déposer les fichiers</h2>
+        <p>Les fichiers seront importés dans le dossier sélectionné</p>
+      </div>
+    </div>
+
+    <!-- 4. FOLDER CONFIRMATION MODAL DIALOG -->
+    <div id="folder-modal" class="modal-overlay hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Confirmer la destination</h3>
+        </div>
+        <div class="modal-body">
+          <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">
+            Sélectionnez le dossier où importer les fichiers sélectionnés :
+          </p>
+          <div class="tree-container" id="modal-folder-tree" style="max-height: 250px; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 10px;">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-modal-cancel" class="btn-secondary">Annuler</button>
+          <button id="btn-modal-confirm" class="btn-primary" style="width: auto;">Importer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. SETTINGS MODAL DIALOG -->
+    <div id="settings-modal" class="modal-overlay hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Paramètres</h3>
+        </div>
+        <div class="modal-body">
+          <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+            <input type="checkbox" id="setting-autostart" style="width: auto;" />
+            <label for="setting-autostart" style="margin-bottom: 0; cursor: pointer;">Lancer au démarrage</label>
+          </div>
+          <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+            <input type="checkbox" id="setting-contextmenu" style="width: auto;" />
+            <label for="setting-contextmenu" style="margin-bottom: 0; cursor: pointer;">Ajouter au menu contextuel ("Envoyer vers Paper pure")</label>
+          </div>
+          
+          <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; margin-top: 15px;">
+            <h4 style="margin-bottom: 8px; color: #fff; display: flex; align-items: center; gap: 6px;">
+              <span>🖊️ À propos</span>
+            </h4>
+            <p style="color: #94a3b8; font-size: 0.8rem; line-height: 1.5; margin-bottom: 12px;">
+              <strong>FkCloud Share v1.0.0</strong><br/>
+              Client desktop léger de transfert pour tablettes reMarkable Paper Pure et rmfakecloud.<br/>
+              © Contributor – Tous droits réservés.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem; background: rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 6px;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #64748b;">📧 Courriel :</span>
+                <a href="mailto:user@example.invalid" style="color: #7bc7a6; text-decoration: none;">user@example.invalid</a>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #64748b;">🦊 GitLab :</span>
+                <a href="https://gitlab.com/Guiraud" target="_blank" style="color: #7bc7a6; text-decoration: none;">Guiraud</a>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #64748b;">🐦 Twitter/X :</span>
+                <a href="https://twitter.com/mguiraud" target="_blank" style="color: #7bc7a6; text-decoration: none;">@mguiraud</a>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 4px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 4px;">
+                <span style="color: #64748b;">💝 Soutien :</span>
+                <a href="https://www.paypal.com/paypalme/example" target="_blank" style="color: #7bc7a6; text-decoration: none; font-weight: bold;">Faire un don via PayPal</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-settings-close" class="btn-primary" style="width: auto;">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

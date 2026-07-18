@@ -1,0 +1,11 @@
+<resources>
+    <!-- Charte "Registre libre" — thème sombre -->
+    <color name="registre_background">#171615</color>
+    <color name="registre_surface">#201E1A</color>
+    <color name="registre_on_surface">#F4EEE3</color>
+    <color name="registre_primary">#AFC7E1</color>
+    <color name="registre_on_primary">#10253A</color>
+    <color name="registre_accent">#E7A397</color>
+    <color name="registre_error">#FFB4AA</color>
+    <color name="registre_outline">#9B958B</color>
+</resources>
