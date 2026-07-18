@@ -644,6 +644,19 @@ fn save_settings(autostart: bool, contextmenu: bool) -> Result<(), String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
+            // A second launch (e.g. Finder "send" service) hits this callback
+            // in the already-running instance instead of spawning a new process/window.
+            if let Some(pos) = argv.iter().position(|a| a == "--upload") {
+                if let Some(file_path) = argv.get(pos + 1) {
+                    let _ = app.emit("upload-file-selected", file_path.clone());
+                }
+            }
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.set_focus();
+            }
+        }))
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             // Check command line arguments for --upload
