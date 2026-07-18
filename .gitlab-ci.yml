@@ -10,7 +10,8 @@ variables:
 cache:
   paths:
     - .cargo/
-    - target/
+    - core/target/
+    - apps/desktop/src-tauri/target/
     - apps/desktop/node_modules/
 
 # ==========================================
@@ -19,7 +20,10 @@ cache:
 clippy:
   stage: lint
   image: rust:1.80-slim
+  before_script:
+    - rustup component add clippy
   script:
+    - cd core
     - cargo clippy --all-targets -- -D warnings
 
 test-core:

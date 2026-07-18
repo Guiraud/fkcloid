@@ -16,7 +16,7 @@ Clients (GPL-3.0) pour envoyer des PDF/EPUB vers un serveur rmfakecloud.
 |------------|---------|--------|
 | Android (F-Droid) | [apps/android](apps/android/README.md) | ✅ Fonctionnel, testé E2E |
 | iOS | [apps/ios](apps/ios/README.md) | 🚧 Planifié (SwiftUI + Share Extension) |
-| Desktop (Windows, macOS Intel & Silicon) | [apps/desktop](apps/desktop/README.md) | 🚧 Planifié (Compose Multiplatform) |
+| Desktop (Windows, macOS Intel & Silicon) | [apps/desktop](apps/desktop/README.md) | ✅ Fonctionnel (Tauri) |
 
 Contrat API commun : [Docs/api-rmfakecloud.md](Docs/api-rmfakecloud.md)
 Charte graphique retenue — **Registre libre** : [Docs/charte-graphique/charte-graphique.md](Docs/charte-graphique/charte-graphique.md#3-registre-libre)

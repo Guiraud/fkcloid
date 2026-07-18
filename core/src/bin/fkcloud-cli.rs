@@ -109,7 +109,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             match client.login() {
                 Ok(token) => {
                     let path = config_path()
-                        .ok_or_else(|| "Could not determine home directory")?;
+                        .ok_or("Could not determine home directory")?;
                     let config_data = ConfigData {
                         host: host.clone(),
                         email: email.clone(),
