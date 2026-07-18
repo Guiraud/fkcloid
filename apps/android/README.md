@@ -9,13 +9,21 @@ License: [GPL-3.0-or-later](LICENSE). Not affiliated with reMarkable AS.
 ## Features
 
 - Android share target (`ACTION_SEND` / `ACTION_SEND_MULTIPLE`) for PDF and EPUB
-- Destination folder picker (reads the document tree from the server)
+- Destination folder picker: navigable tree (breadcrumb, tap into
+  subfolders) with documents shown inline for context — not a flat list
+- Upload confirmation auto-dismisses after a short delay; no extra tap needed
+- Web file manager: opens the server's own rmfakecloud web UI in an
+  in-app WebView (browse, rename, move, delete, download) instead of
+  reimplementing a file manager natively
 - HTTPS enforced by default; plain HTTP requires an explicit opt-in
 - Password and session token encrypted with an AES-256-GCM key in the
   Android Keystore; `allowBackup` disabled so secrets never leave the device
+- Visual identity: "Registre libre" charter — see
+  [Docs/charte-graphique](../../Docs/charte-graphique/charte-graphique.md#3-registre-libre)
 - Zero trackers, zero proprietary dependencies — F-Droid friendly
 - Dependencies: AndroidX AppCompat, Material Components, Kotlin coroutines,
-  OkHttp (all FOSS)
+  OkHttp (all FOSS); WebView is part of the Android platform, no extra
+  dependency
 
 ## Server API used
 
@@ -25,11 +33,15 @@ protocol, so no device pairing code is needed — just a web UI account:
 | Call | Purpose |
 |------|---------|
 | `POST /ui/api/login` | JSON `{email, password}` → JWT (plain-text body, 24 h) |
-| `GET /ui/api/documents` | Document tree, used for the folder picker |
+| `GET /ui/api/documents` | Full document tree (folders + files), used by the folder picker |
 | `POST /ui/api/documents/upload` | Multipart fields `parent` + `file` |
 
 Authenticated calls send `Authorization: Bearer <token>`; the app caches the
 token for 23 h and re-logs in automatically on expiry or `401`.
+
+The web file manager instead loads the server's own web root directly in a
+WebView and lets its own login form/session handle everything — it doesn't
+go through the app's stored JWT.
 
 ## Build
 
@@ -48,6 +60,8 @@ cd android
    username and password, then *Save & test connection*.
 2. In any app, share a PDF/EPUB → choose **FkCloud Share** → pick a folder
    → *Upload*.
+3. To browse/manage what's already on the server, tap **Open web file
+   manager** on the main screen.
 
 ## F-Droid notes
 

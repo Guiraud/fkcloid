@@ -14,6 +14,9 @@ sans hypothèse sur leur distribution Android (min API 26, aucun service Google)
 
 **Fait établi** : une v1 Kotlin fonctionne, testée E2E le 2026-07-16 (émulateur
 API 36 ↔ rmfakecloud Docker : login, arbre dossiers, upload vérifié serveur).
+Charte graphique « Registre libre » appliquée et sélecteur de dossier
+navigable (F2), fermeture auto (F7) et gestionnaire de fichiers web (F8)
+ajoutés et testés E2E les 2026-07-17/18 (mêmes conditions de test).
 
 ## 2. Critères impersonnels et hypothèses
 
@@ -52,11 +55,13 @@ monochrome. Pas de réécriture UI.
 | ID | Exigence | Acceptation |
 |---|---|---|
 | F1 | Cible de partage PDF/EPUB (mono et multiple) | intent SEND/SEND_MULTIPLE → dialog s'ouvre avec noms corrects, y compris nom opaque → extension déduite du MIME |
-| F2 | Choix du dossier destination | arbre serveur affiché indenté ; sélection appliquée (vérif API `parent`) |
-| F3 | Création de dossier depuis le dialog | `POST /ui/api/folders` ; nouveau dossier visible et sélectionné |
+| F2 | Choix du dossier destination | sélecteur navigable (fil d'Ariane, tap pour entrer dans un sous-dossier, documents affichés en contexte non cliquables) ; sélection appliquée (vérif API `parent`) — implémenté (`FolderPickerActivity`), remplace l'ancienne liste plate |
+| F3 | Création de dossier depuis le dialog | `POST /ui/api/folders` ; nouveau dossier visible et sélectionné — **non implémenté**, reste à faire |
 | F4 | Session persistante | jeton 23 h ; re-login auto sur 401 ; zéro re-saisie du mot de passe |
 | F5 | Écran de configuration | URL + identifiants + test connexion ; états succès/échec distincts (401 vs réseau vs HTTP interdit) |
 | F6 | Rapport d'erreur actionnable | chaque échec d'upload nomme le fichier et la cause ; bouton réessayer |
+| F7 | Fermeture automatique après succès | dialog affiche la confirmation ~1,4 s puis se ferme seul ; bouton « Fermer » reste disponible pour un dismiss immédiat |
+| F8 | Gestionnaire de fichiers web | bouton dédié ouvre une WebView pointant sur le serveur configuré (politique HTTPS/HTTP identique à F5) ; navigation limitée au domaine configuré, liens externes ouverts dans le navigateur système ; CSS `zoom: 50%` injecté post-chargement car la nav de rmfakecloud ne s'adapte pas aux écrans étroits (`setInitialScale`/`zoomBy` inefficaces, cf. `WebFileManagerActivity`) |
 
 ### Non fonctionnelles
 
@@ -67,8 +72,12 @@ monochrome. Pas de réécriture UI.
 - **P1** : upload en streaming (pas de copie locale du fichier partagé).
 - **A11y** : libellés contentDescription sur toutes les commandes ; erreurs
   annoncées par TalkBack.
-- Hors périmètre v2 : téléchargement/lecture de documents, notifications
-  push, gestion multi-comptes.
+- Hors périmètre v2 : téléchargement/lecture de documents *natifs à
+  l'app* (viewer intégré), notifications push, gestion multi-comptes.
+  Revu depuis la v2 initiale : l'accès en lecture/gestion des documents
+  existants est couvert par F8 (WebView vers l'UI web du serveur) —
+  choix délibéré de ne pas réimplémenter un gestionnaire de fichiers
+  natif plutôt qu'un changement de périmètre caché.
 
 ## 5. Preuves de vérification prévues
 
