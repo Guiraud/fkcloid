@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 108 108">
+  <!-- Registre libre: version pleine, rouge brun d'alerte (tampon d'etat: tablette active) -->
+  <path fill="#8E3B2E" d="M30,60 L36,60 L36,78 L72,78 L72,60 L78,60 L78,84 L30,84 Z"/>
+  <path fill="#8E3B2E" d="M35,25 L73,25 A3,3 0 0 1 76,28 L76,66 L32,66 L32,28 A3,3 0 0 1 35,25 Z"/>
+  <path stroke="#FFFCF5" stroke-width="4" stroke-linecap="round" d="M41,37 L67,37"/>
+  <path stroke="#FFFCF5" stroke-width="4" stroke-linecap="round" d="M41,48 L67,48"/>
+</svg>
