@@ -14,6 +14,15 @@ fn get_pending_upload_mutex() -> &'static Mutex<Option<String>> {
     PENDING_UPLOAD.get_or_init(|| Mutex::new(None))
 }
 
+// The app hides instead of exiting on close, so a poisoned mutex would stay
+// poisoned (and this feature permanently broken) for the rest of the process
+// lifetime if we let a panic here propagate via `.unwrap()`.
+fn lock_pending_upload() -> std::sync::MutexGuard<'static, Option<String>> {
+    get_pending_upload_mutex()
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
+}
+
 static ICON_DEFAULT: &[u8] = include_bytes!("../icons/tray-default.png");
 static ICON_ACTIVE: &[u8] = include_bytes!("../icons/tray-active.png");
 
@@ -175,7 +184,7 @@ fn upload_document(parent_id: String, file_path: String) -> Result<(), String> {
         
         let ts = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
+            .map_err(|e| format!("Erreur d'horloge système : {}", e))?
             .as_millis();
             
         let temp_dir = std::env::temp_dir().join(format!("fkcloud-{}", ts));
@@ -613,8 +622,7 @@ done</string>
 
 #[tauri::command]
 fn get_pending_upload() -> Option<String> {
-    let mut pending = get_pending_upload_mutex().lock().unwrap();
-    pending.take()
+    lock_pending_upload().take()
 }
 
 #[tauri::command]
@@ -634,10 +642,20 @@ fn save_settings(autostart: bool, contextmenu: bool) -> Result<(), String> {
     
     let json = serde_json::to_string_pretty(&config).map_err(|e| e.to_string())?;
     std::fs::write(&config_path, json).map_err(|e| e.to_string())?;
-    
-    let _ = set_autostart(autostart);
-    let _ = set_context_menu(contextmenu);
-    
+
+    // Config is already persisted above; still report OS-integration failures
+    // instead of letting the UI show a toggle that silently didn't take effect.
+    let mut warnings = Vec::new();
+    if let Err(e) = set_autostart(autostart) {
+        warnings.push(format!("Démarrage automatique : {}", e));
+    }
+    if let Err(e) = set_context_menu(contextmenu) {
+        warnings.push(format!("Menu contextuel : {}", e));
+    }
+    if !warnings.is_empty() {
+        return Err(warnings.join(" | "));
+    }
+
     Ok(())
 }
 
@@ -662,8 +680,7 @@ pub fn run() {
             // Check command line arguments for --upload
             let args: Vec<String> = std::env::args().collect();
             if args.len() > 2 && args[1] == "--upload" {
-                let mut pending = get_pending_upload_mutex().lock().unwrap();
-                *pending = Some(args[2].clone());
+                *lock_pending_upload() = Some(args[2].clone());
             }
 
             let show_i = MenuItemBuilder::new("Afficher la fenêtre")
@@ -677,7 +694,8 @@ pub fn run() {
                 .build(app)?;
             let menu = Menu::with_items(app, &[&show_i, &upload_i, &quit_i])?;
 
-            let img_default = tauri::image::Image::from_bytes(ICON_DEFAULT).unwrap();
+            let img_default = tauri::image::Image::from_bytes(ICON_DEFAULT)
+                .expect("bundled tray-default icon is a valid PNG");
 
             let _tray = TrayIconBuilder::with_id("main")
                 .menu(&menu)
@@ -697,8 +715,10 @@ pub fn run() {
             // Background thread to poll tablet and update tray icon glow
             let app_handle = app.handle().clone();
             std::thread::spawn(move || {
-                let img_default = tauri::image::Image::from_bytes(ICON_DEFAULT).unwrap();
-                let img_active = tauri::image::Image::from_bytes(ICON_ACTIVE).unwrap();
+                let img_default = tauri::image::Image::from_bytes(ICON_DEFAULT)
+                    .expect("bundled tray-default icon is a valid PNG");
+                let img_active = tauri::image::Image::from_bytes(ICON_ACTIVE)
+                    .expect("bundled tray-active icon is a valid PNG");
                 let mut last_state = false;
                 
                 // Init status
