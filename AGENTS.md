@@ -7,7 +7,7 @@ API contract: `Docs/api-rmfakecloud.md`. PRDs/roadmaps: `Docs/product/{android,i
 
 - `core/` — Rust crate `fkcloud-core` (shared HTTP client logic) + `fkcloud-cli` bin (auto-discovered from `core/src/bin/`).
 - `apps/android/` — Kotlin/Gradle, **functional**, share-target upload + folder browser + embedded web file manager.
-- `apps/desktop/` — Tauri 2 + vanilla JS, **functional** (tray icon, Finder/Explorer context-menu send). NOT Compose Multiplatform — `Docs/product/desktop/PRD.md`/`ROADMAP.md` still recommend Compose Multiplatform as the decided stack; that's stale and unreconciled, trust this file and `apps/desktop/` itself instead.
+- `apps/desktop/` — Tauri 2 + vanilla JS, **functional** (tray icon, Finder/Explorer context-menu send). Matches `Docs/product/desktop/PRD.md`, which is explicitly Tauri-specific ("Retenu : Tauri 2").
 - `apps/ios/` — planning only, no code yet (README describes intended SwiftUI + Share Extension).
 
 **No root `Cargo.toml`** — `core/` and `apps/desktop/src-tauri/` are independent crates. Always `cd` into the crate dir before running `cargo`.
