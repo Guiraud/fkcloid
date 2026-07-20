@@ -20,3 +20,19 @@ Voir [Docs/PUBLISHING.md](Docs/PUBLISHING.md).
 ## Licence
 
 GPL-3.0
+
+---
+
+## Auteur & soutien
+
+Projet développé par [Mehdi Guiraud](https://github.com/Guiraud).
+
+| | |
+|---|---|
+| CV | [cv.mehdiguiraud.info](https://cv.mehdiguiraud.info) |
+| Don | [PayPal](https://www.paypal.com/paypalme/mehdiguiraud) |
+| Code | [github.com/Guiraud/fkcloid](https://github.com/Guiraud/fkcloid) |
+
+© 2026 Mehdi Guiraud – Tous droits réservés
+
+Client desktop : liens auteur dans Paramètres → À propos. Skill : [`skills/bottom-signature/SKILL.md`](skills/bottom-signature/SKILL.md).

@@ -1,0 +1,236 @@
+/**
+ * Bottom Signature Styles
+ * Styles pour le composant de signature réutilisable
+ * Inspiré du projet att.chezmehdi.net
+ */
+
+/* Variables CSS pour personnalisation facile */
+:root {
+    --signature-primary-color: #4361ee;
+    --signature-secondary-color: #48cae4;
+    --signature-accent-color: #ff9e00;
+    --signature-text-color: #333;
+    --signature-text-light: #666;
+    --signature-bg-color: #f8f9fa;
+    --signature-bg-card: #ffffff;
+    --signature-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+    --signature-shadow-md: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --signature-transition: all 0.3s ease;
+}
+
+/* ============================================
+   BANDEAU DE DON EN BIAIS (Donation Ribbon)
+   ============================================ */
+
+.donation-ribbon {
+    position: fixed;
+    top: 45px;
+    left: -75px;
+    width: 260px;
+    background: linear-gradient(135deg, var(--signature-accent-color), #ffa726);
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--signature-transition);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.donation-ribbon:hover {
+    background: linear-gradient(135deg, #ffa726, var(--signature-accent-color));
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: rotate(-45deg) scale(1.05);
+}
+
+.donation-ribbon i {
+    margin-right: 8px;
+    font-size: 1rem;
+}
+
+/* Responsive pour le bandeau */
+@media (max-width: 768px) {
+    .donation-ribbon {
+        top: 50px;
+        left: -85px;
+        width: 260px;
+        padding: 8px 0;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .donation-ribbon {
+        display: none; /* Masqué sur très petits écrans */
+    }
+}
+
+/* ============================================
+   FOOTER DE SIGNATURE
+   ============================================ */
+
+.signature-footer {
+    margin-top: 70px;
+    padding: 40px 20px;
+    background: linear-gradient(0deg, #f0f2fa, var(--signature-bg-color));
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--signature-text-light);
+    position: relative;
+}
+
+/* Barre de couleur décorative en haut du footer */
+.footer-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg,
+        var(--signature-primary-color),
+        var(--signature-secondary-color),
+        var(--signature-accent-color));
+    opacity: 0.7;
+}
+
+/* Liens sociaux */
+.social-links {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.social-icon {
+    font-size: 1.3rem;
+    color: var(--signature-text-light);
+    transition: var(--signature-transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: var(--signature-shadow-sm);
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: var(--signature-shadow-md);
+}
+
+/* Couleurs spécifiques pour chaque réseau social */
+.github-icon:hover {
+    color: #24292f;
+    background-color: #fff9f6;
+}
+
+.twitter-icon:hover {
+    color: #1DA1F2;
+    background-color: #f5faff;
+}
+
+.email-icon:hover {
+    color: #D44638;
+    background-color: #fff7f6;
+}
+
+.paypal-icon:hover {
+    color: #003087;
+    background-color: #f5f7fa;
+}
+
+/* Copyright */
+.copyright {
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Message de don */
+.donation-text {
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    color: var(--signature-text-light);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.donation-text a {
+    color: var(--signature-primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--signature-transition);
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.donation-text a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--signature-primary-color);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+}
+
+.donation-text a:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Informations projet */
+.project-info {
+    margin-top: 15px;
+    font-size: 0.85rem;
+    color: var(--signature-text-light);
+}
+
+/* ============================================
+   RESPONSIVE FOOTER
+   ============================================ */
+
+@media (max-width: 768px) {
+    .signature-footer {
+        padding: 30px 15px;
+        font-size: 0.9rem;
+    }
+
+    .social-links {
+        gap: 15px;
+    }
+
+    .social-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .signature-footer {
+        padding: 25px 10px;
+    }
+
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+}
