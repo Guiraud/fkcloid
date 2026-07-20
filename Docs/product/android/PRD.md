@@ -1,6 +1,6 @@
 # PRD — FkCloud Share Android (v2, base Rust)
 
-Méthode : éthos mertonien ([skill mertonian-coding](https://github.com/Guiraud/Skills)).
+Méthode : éthos mertonien (développement incrémental vérifiable).
 Socle : [core-rust.md](../core-rust.md) · API : [api-rmfakecloud.md](../../api-rmfakecloud.md)
 Charte graphique : [Registre libre](../../charte-graphique/charte-graphique.md#3-registre-libre)
 

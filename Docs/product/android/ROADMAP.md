@@ -1,6 +1,6 @@
 # Roadmap — FkCloud Share Android (bissection progressive)
 
-Méthode : [skill bissection-progressive](https://github.com/Guiraud/Skills).
+Méthode : bissection progressive (itérations courtes, tests à chaque étape).
 Axe ordonné : **borne A** = v1.0 Kotlin actuelle (E2E vert 2026-07-16) →
 **borne B** = v2.0 publiée sur F-Droid, cœur Rust.
 Pas minimal : un jalon ≤ 1 semaine, vérifiable binairement.

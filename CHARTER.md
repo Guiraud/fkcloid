@@ -1,4 +1,4 @@
-# 📋 CHARTE PROJET IA : fkcloid_example_net
+# CHARTE PROJET IA : FkCloud (fkcloid)
 
 ## 1. Vision & Objectifs
 **Problème métier :** Développement assisté par IA

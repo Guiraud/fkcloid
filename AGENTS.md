@@ -1,4 +1,4 @@
-# fkcloid_example_net — AI agent notes
+# FkCloud (fkcloid) — AI agent notes
 
 FkCloud Share: GPL-3.0 clients (Android, iOS, Desktop) for a self-hosted rmfakecloud server.
 API contract: `Docs/api-rmfakecloud.md`. PRDs/roadmaps: `Docs/product/{android,ios,desktop}/`.
