@@ -1,36 +1,39 @@
 # FkCloud (fkcloid)
 
-[![Charte Projet](https://img.shields.io/badge/DOC-CHARTER.md-1E5EFF?style=for-the-badge)](CHARTER.md)
+[![Project charter](https://img.shields.io/badge/DOC-CHARTER.md-1E5EFF?style=for-the-badge)](CHARTER.md)
 
-Clients multi-plateformes (GPL-3.0) pour envoyer des PDF/EPUB vers un serveur
-[rmfakecloud](https://github.com/ddvk/rmfakecloud) auto-hébergé.
+Multi-platform clients (GPL-3.0) to send PDF/EPUB files to a self-hosted
+[rmfakecloud](https://github.com/ddvk/rmfakecloud) server.
 
-| Plateforme | Dossier | Statut |
-|------------|---------|--------|
-| Android (F-Droid) | [apps/android](apps/android/README.md) | Fonctionnel |
-| iOS | [apps/ios](apps/ios/README.md) | Planifié |
-| Desktop (Tauri) | [apps/desktop](apps/desktop/README.md) | Fonctionnel |
+French version: [Lisezmoi.md](Lisezmoi.md).
 
-Contrat API : [Docs/api-rmfakecloud.md](Docs/api-rmfakecloud.md)
+| Platform | Folder | Status |
+|----------|--------|--------|
+| Android (F-Droid) | [apps/android](apps/android/README.md) | Working |
+| iOS | [apps/ios](apps/ios/README.md) | Planned |
+| Desktop (Tauri) | [apps/desktop](apps/desktop/README.md) | Working |
 
-Configuration : URL serveur (ex. `https://rm-cloud.example.invalid`) et identifiants saisis par l'utilisateur — rien d'embarqué dans les sources.
+API contract: [Docs/api-rmfakecloud.md](Docs/api-rmfakecloud.md)
 
-Voir [Docs/PUBLISHING.md](Docs/PUBLISHING.md).
+Configuration: server URL (e.g. `https://rm-cloud.example.invalid`) and
+credentials entered by the user — nothing personal is baked into the sources.
 
-## Licence
+See [Docs/PUBLISHING.md](Docs/PUBLISHING.md).
+
+## License
 
 GPL-3.0
 
 ---
 
-## Auteur & soutien
+## Author & support
 
-Projet développé par [Mehdi Guiraud](https://github.com/Guiraud).
+Built by [Mehdi Guiraud](https://github.com/Guiraud).
 
 | | |
 |---|---|
 | CV | [cv.mehdiguiraud.info](https://cv.mehdiguiraud.info) |
-| Don | [PayPal](https://www.paypal.com/paypalme/mehdiguiraud) |
+| Donate | [PayPal](https://www.paypal.com/paypalme/mehdiguiraud) |
 | Code | [github.com/Guiraud/fkcloid](https://github.com/Guiraud/fkcloid) |
 
-© 2026 Mehdi Guiraud – Tous droits réservés
+© 2026 Mehdi Guiraud – All rights reserved
