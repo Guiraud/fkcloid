@@ -1,40 +1,42 @@
-# Roadmap — FkCloud Share iOS (bissection progressive)
+# Roadmap — FkCloud Share iOS (progressive bisection)
 
-Axe : **borne A** = rien (dossier vide) → **borne B** = v1.0 distribuée
-(TestFlight puis App Store). Pas minimal : jalon ≤ 1 semaine, vérification
-binaire. Chaque jalon = tag git (régression localisable en log₂(N)).
+French: [ROADMAP.fr.md](ROADMAP.fr.md).
 
-## Passes de bissection
+Axis: **bound A** = nothing (empty folder) → **bound B** = v1.0 distributed
+(TestFlight then App Store). Minimal step: milestone ≤ 1 week, binary
+verification. Each milestone = git tag (regression locatable in log₂(N)).
 
-- **Passe 1 — bornes** : A (zéro code iOS) et B (v1.0 distribuée).
-- **Passe 2 — milieu M** : *app conteneur fonctionnelle* — login, arbre,
-  upload d'un PDF choisi via UIDocumentPicker, cœur Rust en XCFramework.
-  Coupe l'espace en deux : avant = toolchain, après = expérience partage
-  et distribution.
-- **Passe 3 — quarts** :
-  - A–M : *XCFramework* — `fkcloud-core` compilé arm64 + simulateur,
-    appelable depuis un projet Swift vide.
-  - M–B : *Share Extension* — le geste de partage complet, App Group,
-    Keychain partagé.
-- **Passe 4** : écarts ≤ 1 semaine — arrêt.
+## Bisection passes
 
-## Jalons (ordre grossier → fin)
+- **Pass 1 — bounds**: A (zero iOS code) and B (v1.0 distributed).
+- **Pass 2 — midpoint M**: *functional container app* — login, tree,
+  upload of a PDF chosen via UIDocumentPicker, Rust core in XCFramework.
+  Splits the space in two: before = toolchain, after = share experience
+  and distribution.
+- **Pass 3 — quarters**:
+  - A–M: *XCFramework* — `fkcloud-core` compiled arm64 + simulator,
+    callable from an empty Swift project.
+  - M–B: *Share Extension* — complete share gesture, App Group,
+    shared Keychain.
+- **Pass 4**: gaps ≤ 1 week — stop.
 
-| Tag | Jalon | Vérification binaire |
+## Milestones (rough order → end)
+
+| Tag | Milestone | Binary verification |
 |---|---|---|
-| — | Borne A | dossier `apps/ios/` : README seul (état actuel) |
-| `ios-m1` | Quart A–M : XCFramework + smoke test | projet Swift minimal appelle `login()` du crate sur simulateur ; **décision H1 consignée ici** (< 2 sem. → continuer ; sinon client Swift natif) |
-| `ios-m2` | **Milieu M** : app conteneur (config + upload picker) | XCTest vert contre Docker ; test 200 Mo → **décision H2 consignée ici** |
-| `ios-m3` | Quart M–B : Share Extension + session partagée | partage depuis Fichiers → document sur serveur ; sans re-login |
-| `ios-v1.0` | Borne B : distribution | build TestFlight installable ; checklist review App Store passée |
+| — | Bound A | `apps/ios/` folder: README only (current state) |
+| `ios-m1` | Quarter A–M: XCFramework + smoke test | minimal Swift project calls crate `login()` on simulator; **H1 decision recorded here** (< 2 wk → continue; otherwise native Swift client) |
+| `ios-m2` | **Midpoint M**: container app (config + picker upload) | XCTest green against Docker; 200 MB test → **H2 decision recorded here** |
+| `ios-m3` | Quarter M–B: Share Extension + shared session | share from Files → document on server; no re-login |
+| `ios-v1.0` | Bound B: distribution | installable TestFlight build; App Store review checklist passed |
 
-## Segments de risque
+## Risk segments
 
-Casse au jalon `m3` → tester `m2` (le milieu) avant d'inspecter les commits :
-moitié fautive identifiée en un essai, puis bissection interne au segment.
+Breakage at milestone `m3` → test `m2` (midpoint) before inspecting commits:
+faulty half identified in one trial, then internal bisection within the segment.
 
-## Après B (backlog ordonné)
+## After B (ordered backlog)
 
-1. iPad multitâche (Split View) si demande.
-2. Téléchargement de documents.
-3. Widget « derniers envois ».
+1. iPad multitasking (Split View) if requested.
+2. Document download.
+3. « Recent uploads » widget.

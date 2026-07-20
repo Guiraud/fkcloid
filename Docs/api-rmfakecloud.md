@@ -1,27 +1,29 @@
-# Spécification API partagée — rmfakecloud (web UI API)
+# Shared API specification — rmfakecloud (web UI API)
 
-Contrat commun aux trois interfaces (Android, iOS, Desktop). Chaque client
-implémente exactement ce protocole ; toute divergence se corrige ici d'abord.
-Vérifié contre le source de [ddvk/rmfakecloud](https://github.com/ddvk/rmfakecloud)
-(`internal/ui/routes.go`, `handlers.go`, `middleware.go`) et testé en réel
-(émulateur Android + serveur Docker, 2026-07-16).
+French: [api-rmfakecloud.fr.md](api-rmfakecloud.fr.md).
 
-Serveur de référence : `https://rm-cloud.example.invalid`.
+Common contract for the three clients (Android, iOS, Desktop). Each client
+implements this protocol exactly; any divergence is fixed here first.
+Checked against [ddvk/rmfakecloud](https://github.com/ddvk/rmfakecloud)
+(`internal/ui/routes.go`, `handlers.go`, `middleware.go`) and tested live
+(Android emulator + Docker server, 2026-07-16).
 
-## Authentification
+Example server: `https://rm-cloud.example.invalid`.
 
-| Étape | Détail |
-|-------|--------|
+## Authentication
+
+| Step | Detail |
+|------|--------|
 | Login | `POST /ui/api/login`, JSON `{"email": "...", "password": "..."}` |
-| Réponse | Corps texte brut = JWT (pas de JSON), validité 24 h |
-| Usage | Header `Authorization: Bearer <jwt>` sur tous les appels suivants |
-| Expiration | Recommandation client : cache 23 h, re-login automatique sur 401 |
-| Erreurs | `401` identifiants invalides, `400` JSON malformé |
+| Response | Raw text body = JWT (not JSON), valid 24 h |
+| Usage | `Authorization: Bearer <jwt>` on all later calls |
+| Expiry | Client recommendation: cache 23 h, auto re-login on 401 |
+| Errors | `401` bad credentials, `400` malformed JSON |
 
-Note : sur un serveur vierge (zéro utilisateur), le premier login **crée**
-le compte admin avec les identifiants fournis.
+Note: on a blank server (no users), the first login **creates** the admin
+account with the credentials supplied.
 
-## Arbre des documents
+## Document tree
 
 `GET /ui/api/documents` →
 
@@ -37,40 +39,40 @@ le compte admin avec les identifiants fournis.
 }
 ```
 
-Clés racine `Entries`/`Trash` en **PascalCase** (structs Go sans tags) ;
-clés des entrées en camelCase. Dossiers = `isFolder: true` + `children`.
+Root keys `Entries`/`Trash` are **PascalCase** (Go structs without tags);
+entry keys are camelCase. Folders = `isFolder: true` + `children`.
 
-## Envoi de document
+## Document upload
 
-`POST /ui/api/documents/upload` — multipart/form-data :
+`POST /ui/api/documents/upload` — multipart/form-data:
 
-| Champ | Valeur |
+| Field | Value |
 |-------|--------|
-| `parent` | id du dossier destination, ou `root` pour la racine |
-| `file` | fichier binaire, nom de fichier avec extension `.pdf` / `.epub` (répétable pour envoi multiple) |
+| `parent` | destination folder id, or `root` for the library root |
+| `file` | binary file, filename with `.pdf` / `.epub` extension (repeatable for multi-upload) |
 
-Réponses : `200` OK, `409` document déjà existant (`{"error": …, "docId": …}`),
-`401` jeton invalide/expiré, `400` multipart invalide.
+Responses: `200` OK, `409` document already exists (`{"error": …, "docId": …}`),
+`401` invalid/expired token, `400` invalid multipart.
 
-**Important :** le nom de fichier doit porter l'extension — le serveur en
-déduit le type. Si le fournisseur de contenu ne donne qu'un id opaque,
-dériver l'extension du type MIME (`application/pdf` → `.pdf`,
+**Important:** the filename must carry the extension — the server derives the
+type from it. If the content provider only gives an opaque id, derive the
+extension from the MIME type (`application/pdf` → `.pdf`,
 `application/epub+zip` → `.epub`).
 
-## Autres endpoints utiles (non implémentés côté clients pour l'instant)
+## Other useful endpoints (not yet wired in clients)
 
-- `GET /ui/api/documents/:docid?type=pdf` — export/téléchargement
-- `DELETE /ui/api/documents/:docid` — suppression
-- `PUT /ui/api/documents` — déplacement/renommage
-- `POST /ui/api/folders` — création de dossier
-- `GET /ui/api/sync` — notifier la tablette (rafraîchissement)
+- `GET /ui/api/documents/:docid?type=pdf` — export/download
+- `DELETE /ui/api/documents/:docid` — delete
+- `PUT /ui/api/documents` — move/rename
+- `POST /ui/api/folders` — create folder
+- `GET /ui/api/sync` — notify the tablet (refresh)
 
-## Politique de sécurité commune aux clients
+## Shared client security policy
 
-1. HTTPS obligatoire par défaut ; HTTP uniquement sur opt-in explicite
-   de l'utilisateur (usage LAN), avec avertissement visible.
-2. Mot de passe et JWT stockés chiffrés via le coffre natif de la
-   plateforme : Android Keystore (AES-256-GCM), iOS Keychain,
-   Desktop : Keychain macOS / DPAPI Windows / Secret Service Linux.
-3. Jamais de secret en clair dans logs, backups ou fichiers de config.
-4. Fichiers transmis en streaming, sans copie temporaire persistante.
+1. HTTPS required by default; HTTP only on explicit user opt-in (LAN use),
+   with a visible warning.
+2. Password and JWT stored encrypted via the platform vault: Android Keystore
+   (AES-256-GCM), iOS Keychain, Desktop: macOS Keychain / Windows DPAPI /
+   Linux Secret Service.
+3. Never log or backup secrets in clear text, nor write them to config files.
+4. Stream uploads; no persistent temporary copies of user files.

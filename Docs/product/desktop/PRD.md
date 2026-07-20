@@ -1,103 +1,105 @@
-# PRD — FkCloud Share Desktop (v1, base Rust / Tauri)
+# PRD — FkCloud Share Desktop (v1, Rust base / Tauri)
 
-Méthode : éthos mertonien. Socle : [core-rust.md](../core-rust.md) ·
-API : [api-rmfakecloud.md](../../api-rmfakecloud.md)
+French: [PRD.fr.md](PRD.fr.md).
 
-## 1. Contexte universel et bénéficiaires
+Method: Mertonian ethos. Core: [core-rust.md](../core-rust.md) ·
+API: [api-rmfakecloud.md](../../api-rmfakecloud.md)
 
-Sur poste de travail, les documents à envoyer vers la tablette (articles PDF,
-livres EPUB, papiers de recherche) sont produits ou téléchargés dans un
-navigateur ou un gestionnaire de fichiers. Le geste cible : glisser-déposer
-sur une fenêtre ou une icône, choisir un dossier, terminé. Bénéficiaires :
-les mêmes self-hosters, sur Windows 10/11 x64, macOS Intel (x86_64) et
-macOS Apple Silicon (arm64). Linux traité en cible de compilation dès le
-départ (coût marginal nul avec Tauri) mais hors engagement v1.
+## 1. Universal context and beneficiaries
 
-## 2. Critères impersonnels et hypothèses
+On desktop, documents to send to the tablet (PDF articles,
+EPUB books, research papers) are produced or downloaded in a
+browser or file manager. Target gesture: drag-and-drop
+onto a window or icon, choose a folder, done. Beneficiaries:
+the same self-hosters, on Windows 10/11 x64, macOS Intel (x86_64) and
+macOS Apple Silicon (arm64). Linux treated as a compile target from the
+start (marginal cost with Tauri) but out of v1 commitment.
 
-| # | Critère | Métrique observable |
+## 2. Impersonal criteria and hypotheses
+
+| # | Criterion | Observable metric |
 |---|---|---|
-| C1 | Portabilité | mêmes fonctionnalités et mêmes tests sur win-x64, mac-x64, mac-arm64 ; aucune logique conditionnelle par OS hors stockage des secrets et packaging |
-| C2 | Geste | drag & drop → confirmation ≤ 3 interactions ; file d'attente visible |
-| C3 | Empreinte | binaire < 25 Mo ; RAM au repos < 150 Mo (exclut Electron, ~10× au-dessus) |
-| C4 | Sécurité | secrets via coffre natif (Keychain / Credential Manager-DPAPI / Secret Service) ; HTTPS par défaut, HTTP opt-in |
-| C5 | Vérifiabilité | E2E automatisé (WebDriver tauri-driver) contre rmfakecloud Docker sur les 3 cibles en CI |
+| C1 | Portability | same features and same tests on win-x64, mac-x64, mac-arm64; no OS-conditional logic except secret storage and packaging |
+| C2 | Gesture | drag & drop → confirmation ≤ 3 interactions; visible queue |
+| C3 | Footprint | binary < 25 MB; idle RAM < 150 MB (excludes Electron, ~10× above) |
+| C4 | Security | secrets via native vault (Keychain / Credential Manager-DPAPI / Secret Service); HTTPS by default, HTTP opt-in |
+| C5 | Verifiability | automated E2E (WebDriver tauri-driver) against rmfakecloud Docker on all 3 targets in CI |
 
-Hypothèses falsifiables :
-- **H1** : la webview système (WebView2 / WKWebView) suffit — pas de rendu
-  divergent bloquant entre OS. Invalidation : captures comparées au jalon M2 ;
-  divergence bloquante → UI native `egui` (alternative documentée).
-- **H2** : un utilisateur desktop veut voir sa bibliothèque, pas seulement
-  envoyer. Non testée en v1 (hors périmètre) ; sondage utilisateurs après
-  v1.0 — si confirmée, la vue bibliothèque devient le premier item v1.1.
+Falsifiable hypotheses:
+- **H1**: the system webview (WebView2 / WKWebView) is sufficient — no blocking
+  rendering divergence between OSes. Invalidation: compared screenshots at milestone M2;
+  blocking divergence → native `egui` UI (documented alternative).
+- **H2**: a desktop user wants to see their library, not just
+  send. Not tested in v1 (out of scope); user survey after
+  v1.0 — if confirmed, library view becomes the first v1.1 item.
 
-## 3. Audit de l'existant
+## 3. Audit of the existing
 
-| Solution | Limites observées |
+| Solution | Observed limits |
 |---|---|
-| UI web rmfakecloud (navigateur) | fonctionne, mais pas de drag & drop global, pas de tray, re-login |
-| `rmapi` (Go, CLI) | protocole *device* sync, pas l'API web UI ; pairing par code ; pas de GUI |
-| App desktop officielle reMarkable | serveur tiers impossible |
-| Electron + code web | viole C3 (empreinte) — écarté sur critère, pas sur préférence |
-| **Retenu : Tauri 2** | webview système + backend Rust : le crate `fkcloud-core` est appelé sans FFI, C3 tenu |
+| rmfakecloud web UI (browser) | works, but no global drag & drop, no tray, re-login |
+| `rmapi` (Go, CLI) | *device* sync protocol, not the web UI API; code pairing; no GUI |
+| Official reMarkable desktop app | third-party server impossible |
+| Electron + web code | violates C3 (footprint) — ruled out on criterion, not preference |
+| **Selected: Tauri 2** | system webview + Rust backend: `fkcloud-core` crate called without FFI, C3 met |
 
-Justification structurelle : Tauri est le seul candidat où le cœur Rust est
-une dépendance directe (zéro couche de binding), ce qui fait du desktop la
-plateforme de référence pour valider le crate.
+Structural justification: Tauri is the only candidate where the Rust core is
+a direct dependency (zero binding layer), making desktop the
+reference platform for validating the crate.
 
-## 4. Exigences
+## 4. Requirements
 
-### Fonctionnelles
+### Functional
 
-| ID | Exigence | Acceptation |
+| ID | Requirement | Acceptance |
 |---|---|---|
-| F1 | Drag & drop de PDF/EPUB (multiple) sur la fenêtre | dépôt → dialog dossier → upload ; refus motivé des autres types |
-| F2 | Choix du dossier + création de dossier | arbre serveur ; `POST folders` vérifié serveur |
-| F3 | File d'attente d'envois | progression par fichier ; échec n'interrompt pas la file ; réessai unitaire |
-| F4 | Icône de zone de notification (tray) | dépôt sur l'icône ou menu « Envoyer un fichier… » ; fermeture fenêtre ≠ quitter |
-| F5 | Configuration | URL + identifiants + test connexion ; erreurs distinctes 401/réseau/HTTP interdit |
-| F6 | Session persistante | jeton 23 h, re-login auto sur 401 (comportement du crate, identique aux mobiles) |
+| F1 | Drag & drop of PDF/EPUB (multiple) onto the window | drop → folder dialog → upload; motivated rejection of other types |
+| F2 | Folder choice + folder creation | server tree; `POST folders` verified server-side |
+| F3 | Upload queue | progress per file; failure does not stop the queue; per-item retry |
+| F4 | System tray icon | drop on icon or « Send a file… » menu; closing window ≠ quit |
+| F5 | Configuration | URL + credentials + connection test; distinct errors 401/network/forbidden HTTP |
+| F6 | Persistent session | 23 h token, auto re-login on 401 (crate behavior, identical to mobile) |
 
-### Non fonctionnelles
+### Non-functional
 
-- **S1** : secrets via crate `keyring` (coffres natifs C4) ; jamais dans un
-  fichier de config ni dans les logs.
-- **S2** : CSP Tauri stricte ; API exposées au webview limitées aux
-  commandes déclarées (allowlist).
-- **P1** : upload streaming ; fichier 1 Go sans dépassement mémoire.
-- **A11y** : navigation clavier complète ; contrastes AA (charte graphique).
-- Hors périmètre v1 : vue bibliothèque (H2), téléchargement, auto-update
-  (v1.1 — nécessite signature).
+- **S1**: secrets via `keyring` crate (native vaults C4); never in a
+  config file nor in logs.
+- **S2**: strict Tauri CSP; APIs exposed to webview limited to
+  declared commands (allowlist).
+- **P1**: streaming upload; 1 GB file without memory overflow.
+- **A11y**: full keyboard navigation; AA contrast (visual identity).
+- Out of v1 scope: library view (H2), download, auto-update
+  (v1.1 — requires signing).
 
-## 5. Preuves de vérification prévues
+## 5. Planned verification evidence
 
-1. Tests du crate (déjà exigés par `core-m1`) — non redondés.
-2. E2E `tauri-driver` : dépôt d'un PDF → assertion API serveur Docker ;
-   exécuté en CI sur les 3 cibles (runners win/mac-intel/mac-arm).
-3. Test de charge : 10 fichiers en file, dont un corrompu → 9 succès,
-   1 échec nommé.
-4. Mesures C3 publiées à chaque tag (taille binaire, RSS au repos).
+1. Crate tests (already required by `core-m1`) — not duplicated.
+2. E2E `tauri-driver`: drop a PDF → Docker server API assertion;
+   run in CI on all 3 targets (win/mac-intel/mac-arm runners).
+3. Load test: 10 files in queue, one corrupted → 9 successes,
+   1 named failure.
+4. C3 measurements published at each tag (binary size, idle RSS).
 
-## 6. Trois risques principaux
+## 6. Three main risks
 
-1. **Signature/notarisation macOS et SmartScreen Windows** (impact fort,
-   vraisemblance certaine, détection immédiate) — binaires non signés =
-   avertissements bloquants pour l'utilisateur. Réduction : certificat
-   développeur + notarisation dès `desktop-m3` (pas après) ; coût récurrent
-   nommé (contre-norme : dépendance à des autorités propriétaires pour
-   distribuer du logiciel libre ; compensation : hachés SHA-256 publiés).
-2. **Divergences webview** (impact moyen, vraisemblance moyenne) — WebView2
-   ≠ WKWebView (drag & drop, file API). Réduction : H1 testée au milieu M,
-   pas à la fin ; repli egui chiffré avant engagement.
-3. **Parité mac Intel réelle** (impact moyen, vraisemblance faible,
-   détection difficile sans matériel) — arm64 testé sur machine du
-   mainteneur, x86_64 seulement en CI. Réduction : la CI exécute l'E2E
-   complet sur runner Intel ; pas de « ça compile donc ça marche ».
+1. **macOS signing/notarization and Windows SmartScreen** (high impact,
+   certain likelihood, immediate detection) — unsigned binaries =
+   blocking warnings for the user. Mitigation: developer certificate
+   + notarization from `desktop-m3` (not after); recurring cost
+   named (counter-norm: dependency on proprietary authorities to
+   distribute free software; compensation: published SHA-256 hashes).
+2. **Webview divergences** (medium impact, medium likelihood) — WebView2
+   ≠ WKWebView (drag & drop, file API). Mitigation: H1 tested at midpoint M,
+   not at the end; egui fallback sized before commitment.
+3. **Real mac Intel parity** (medium impact, low likelihood,
+   difficult detection without hardware) — arm64 tested on maintainer's
+   machine, x86_64 only in CI. Mitigation: CI runs full E2E
+   on Intel runner; no « it compiles so it works ».
 
-## 7. Sources vérifiées
+## 7. Verified sources
 
-- Contrat API : source rmfakecloud + E2E du 2026-07-16 (ce dépôt).
-- Tauri 2 (bundler msi/dmg, tauri-driver, CSP) : https://v2.tauri.app/ .
-- crate `keyring` (Keychain/DPAPI/Secret Service) : crates.io/crates/keyring .
-- Notarisation macOS : documentation Apple ; SmartScreen : documentation
-  Microsoft (connaissance générale, procédures à re-vérifier au jalon m3).
+- API contract: rmfakecloud source + E2E 2026-07-16 (this repo).
+- Tauri 2 (msi/dmg bundler, tauri-driver, CSP): https://v2.tauri.app/ .
+- `keyring` crate (Keychain/DPAPI/Secret Service): crates.io/crates/keyring .
+- macOS notarization: Apple documentation; SmartScreen: Microsoft
+  documentation (general knowledge, procedures to re-verify at milestone m3).

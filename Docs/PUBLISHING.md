@@ -1,30 +1,38 @@
-# Publication publique
+# Public publication
 
-## Fichiers à ne jamais ajouter
+French: [PUBLISHING.fr.md](PUBLISHING.fr.md).
+
+## Language policy
+
+- **Canonical public docs** are in **English** (`README.md` and `Docs/*.md` except `*.fr.md`).
+- French copies use the `.fr.md` suffix (or root `Lisezmoi.md`).
+- Product PRDs/roadmaps ship EN + `.fr.md`.
+
+## Never commit
 
 - `VAULT_LOCAL.md`, `handoff.md`, `.continues-handoff.md`
-- URLs serveur personnelles, IP LAN, emails, identifiants
+- Personal server URLs, LAN IPs, emails, credentials
 - `*.keystore`, `*.jks`, `.env`
 
 ## Placeholders
 
 | Local | Public |
 |-------|--------|
-| Serveur rmfakecloud | `https://rm-cloud.example.invalid` |
-| Identifiant | `user.example` |
-| Package Android / Tauri | `net.example.fkcloud` |
+| rmfakecloud server | `https://rm-cloud.example.invalid` |
+| Username | `user.example` |
+| Android / Tauri package | `net.example.fkcloud` |
 
-## Historique git
+## Git history
 
-L'historique a été réécrit (`git filter-repo`) avant publication.
+History was rewritten (`git filter-repo`) before publication.
 
-## Dépôt GitHub
+## GitHub repository
 
-Remote cible : `git@github.com:Guiraud/fkcloid.git`
+Remote: `git@github.com:Guiraud/fkcloid.git`
 
 ```bash
 git remote add origin git@github.com:Guiraud/fkcloid.git
 gh repo create Guiraud/fkcloid --public --source=. --remote=origin --push
-# ou :
+# or:
 git push -u --force origin main
 ```

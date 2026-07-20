@@ -1,51 +1,53 @@
-# Signature et Notarisation de FkCloud Share (Tauri 2)
+# FkCloud Share Code Signing and Notarization (Tauri 2)
 
-Ce document décrit la procédure de signature de code et de notarisation pour distribuer FkCloud Share en production pour macOS et Windows sans avertissements de sécurité (SmartScreen, Gatekeeper).
+French: [SIGNING.fr.md](SIGNING.fr.md).
+
+This document describes the code signing and notarization procedure for distributing FkCloud Share in production for macOS and Windows without security warnings (SmartScreen, Gatekeeper).
 
 ---
 
-## 1. Distribution macOS (Gatekeeper & Notarisation)
+## 1. macOS Distribution (Gatekeeper & Notarization)
 
-Pour macOS, l'application doit être signée avec un certificat de développeur Apple et notarisée (soumise aux serveurs d'Apple pour analyse de sécurité) afin de s'exécuter sans message d'avertissement de blocage.
+For macOS, the application must be signed with an Apple Developer certificate and notarized (submitted to Apple's servers for security analysis) in order to run without a blocking warning message.
 
-### Prérequis
-- Un compte **Apple Developer** payant (99$/an).
-- Une machine macOS ou un runner macOS équipé de Xcode.
-- Un certificat de type **Developer ID Application** installé dans le trousseau d'accès du runner.
-- Un identifiant Apple ID avec un mot de passe d'application dédié pour la notarisation.
+### Prerequisites
+- A paid **Apple Developer** account ($99/year).
+- A macOS machine or macOS runner with Xcode installed.
+- A **Developer ID Application** certificate installed in the runner's keychain.
+- An Apple ID with a dedicated app-specific password for notarization.
 
-### Variables d'environnement pour le build
-Lors du lancement du build Tauri, définissez les variables suivantes dans votre environnement de CI :
+### Build environment variables
+When launching the Tauri build, set the following variables in your CI environment:
 
 ```bash
-# Nom exact du certificat dans votre Trousseau (Keychain)
-export APPLE_SIGNING_IDENTITY="Developer ID Application: Votre Nom/Entreprise (TEAMID)"
+# Exact certificate name in your Keychain
+export APPLE_SIGNING_IDENTITY="Developer ID Application: Your Name/Company (TEAMID)"
 
-# Identifiant de votre compte Apple Developer
-export APPLE_ID="votre.email@compte-dev.apple.com"
+# Your Apple Developer account identifier
+export APPLE_ID="your.email@dev-account.apple.com"
 
-# Mot de passe d'application généré sur appleid.apple.com
+# App-specific password generated at appleid.apple.com
 export APPLE_PASSWORD="abcd-efgh-ijkl-mnop"
 
-# Votre Team ID Apple Developer
+# Your Apple Developer Team ID
 export APPLE_TEAM_ID="TEAMID1234"
 ```
 
-### Entitlements (Droits d'accès)
-Tauri gère automatiquement la notarisation via `notarytool` lors de l'appel à `tauri build` si les variables ci-dessus sont présentes. Si vous utilisez la notarisation, configurez les droits d'accès réseau si l'App Sandbox est activé. 
+### Entitlements
+Tauri automatically handles notarization via `notarytool` when calling `tauri build` if the variables above are present. If you use notarization, configure network entitlements if App Sandbox is enabled.
 
 ---
 
-## 2. Distribution Windows (SmartScreen)
+## 2. Windows Distribution (SmartScreen)
 
-Pour Windows, le programme d'installation MSI doit être signé avec un certificat de signature de code (idéalement de type EV - Extended Validation pour supprimer instantanément le filtre Microsoft SmartScreen).
+For Windows, the MSI installer must be signed with a code signing certificate (ideally EV — Extended Validation — to instantly remove the Microsoft SmartScreen filter).
 
-### Prérequis
-- Un certificat de signature de code Windows (fichier `.pfx` ou via un module HSM/Cloud).
-- L'outil `signtool.exe` (inclus dans le Windows SDK).
+### Prerequisites
+- A Windows code signing certificate (`.pfx` file or via HSM/Cloud module).
+- The `signtool.exe` tool (included in the Windows SDK).
 
-### Configuration de Tauri pour Windows
-Dans `tauri.conf.json`, vous pouvez configurer l'adresse du serveur de signature d'horodatage :
+### Tauri configuration for Windows
+In `tauri.conf.json`, you can configure the timestamp server URL:
 
 ```json
 {
@@ -58,30 +60,30 @@ Dans `tauri.conf.json`, vous pouvez configurer l'adresse du serveur de signature
 }
 ```
 
-### Variables de build (SignTool)
-Définissez ces variables sur votre runner Windows avant le build :
+### Build variables (SignTool)
+Set these variables on your Windows runner before the build:
 
 ```powershell
-# Chemin local vers le fichier de certificat PFX
+# Local path to the PFX certificate file
 $env:TAURI_SIGNING_IDENTITY = "C:\Certificates\my-code-signing.pfx"
 
-# Mot de passe protégeant le certificat PFX
-$env:TAURI_SIGNING_IDENTITY_PASSWORD = "MonMotDePasseSecret"
+# Password protecting the PFX certificate
+$env:TAURI_SIGNING_IDENTITY_PASSWORD = "MySecretPassword"
 ```
 
 ---
 
-## 3. Publication et Intégration CI (GitLab CI/CD)
+## 3. Publishing and CI Integration (GitLab CI/CD)
 
-Le script de build de production générera automatiquement les binaires finaux et calculera les hachages SHA-256 pour des raisons de traçabilité et de sécurité.
+The production build script will automatically generate the final binaries and compute SHA-256 hashes for traceability and security.
 
-### Commande de build
+### Build command
 ```bash
 npm run tauri build
 ```
 
-### Calcul automatique des sommes de contrôle (SHA-256)
-Après le build, générez les hachages dans le répertoire des artefacts :
+### Automatic checksum computation (SHA-256)
+After the build, generate hashes in the artifacts directory:
 
 ```bash
 # macOS
@@ -90,4 +92,4 @@ shasum -a 256 src-tauri/target/release/bundle/dmg/*.dmg > SHA256SUMS.txt
 # Windows
 certutil -hashfile src-tauri/target/release/bundle/msi/*.msi SHA256 > SHA256SUMS.txt
 ```
-Ces sommes de contrôle doivent être publiées sur la page de version (Release) de votre dépôt GitLab ou site web.
+These checksums must be published on the Release page of your GitLab repository or website.

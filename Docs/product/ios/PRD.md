@@ -1,96 +1,97 @@
-# PRD — FkCloud Share iOS (v1, base Rust)
+# PRD — FkCloud Share iOS (v1, Rust base)
 
-Méthode : éthos mertonien. Socle : [core-rust.md](../core-rust.md) ·
-API : [api-rmfakecloud.md](../../api-rmfakecloud.md)
+French: [PRD.fr.md](PRD.fr.md).
 
-## 1. Contexte universel et bénéficiaires
+Method: Mertonian ethos. Core: [core-rust.md](../core-rust.md) ·
+API: [api-rmfakecloud.md](../../api-rmfakecloud.md)
 
-Mêmes bénéficiaires que l'app Android (self-hosters rmfakecloud), équipés
-d'iPhone/iPad. iOS n'offre aucun canal de distribution libre équivalent à
-F-Droid : la distribution est une contrainte structurante, pas un détail
-(voir contre-normes, §6). Cible : iOS 16+, iPhone et iPad.
+## 1. Universal context and beneficiaries
 
-## 2. Critères impersonnels et hypothèses
+Same beneficiaries as the Android app (rmfakecloud self-hosters), equipped
+with iPhone/iPad. iOS offers no free distribution channel equivalent to
+F-Droid: distribution is a structural constraint, not a detail
+(see counter-norms, §6). Target: iOS 16+, iPhone and iPad.
 
-| # | Critère | Métrique observable |
+## 2. Impersonal criteria and hypotheses
+
+| # | Criterion | Observable metric |
 |---|---|---|
-| C1 | Parité protocole | mêmes appels, mêmes comportements que l'app Android (source unique : `fkcloud-core`) |
-| C2 | Geste natif | présence dans la Share Sheet pour PDF/EPUB ; partage → confirmation ≤ 4 interactions |
-| C3 | Sécurité | secrets dans le Keychain (`AfterFirstUnlockThisDeviceOnly`) ; ATS actif — HTTPS obligatoire, exception HTTP locale déclarée et opt-in |
-| C4 | Empreinte | app + extension < 20 Mo ; zéro dépendance tierce Swift |
-| C5 | Accessibilité | VoiceOver complet, Dynamic Type respecté |
+| C1 | Protocol parity | same calls, same behaviors as the Android app (single source: `fkcloud-core`) |
+| C2 | Native gesture | presence in the Share Sheet for PDF/EPUB; share → confirmation ≤ 4 interactions |
+| C3 | Security | secrets in Keychain (`AfterFirstUnlockThisDeviceOnly`); ATS active — HTTPS required, local HTTP exception declared and opt-in |
+| C4 | Footprint | app + extension < 20 MB; zero third-party Swift dependency |
+| C5 | Accessibility | full VoiceOver, Dynamic Type respected |
 
-Hypothèses falsifiables :
-- **H1** : UniFFI→Swift est viable (coût d'intégration < 2 semaines pour
-  login+arbre). Invalidation mesurée au jalon M1 ; sinon bascule client
-  Swift natif (~300 lignes), décision documentée.
-- **H2** : la limite mémoire des extensions iOS (~120 Mo) permet l'upload
-  streaming de gros fichiers. Invalidation : test 200 Mo au jalon M2 ;
-  sinon l'extension délègue à l'app conteneur (background URLSession).
+Falsifiable hypotheses:
+- **H1**: UniFFI→Swift is viable (integration cost < 2 weeks for
+  login+tree). Invalidation measured at milestone M1; otherwise switch to native
+  Swift client (~300 lines), documented decision.
+- **H2**: iOS extension memory limit (~120 MB) allows streaming upload
+  of large files. Invalidation: 200 MB test at milestone M2;
+  otherwise the extension delegates to the container app (background URLSession).
 
-## 3. Audit de l'existant
+## 3. Audit of the existing
 
-| Solution | Limites observées |
+| Solution | Observed limits |
 |---|---|
-| UI web rmfakecloud dans Safari | pas de Share Sheet, re-login, UX mobile dégradée |
-| App officielle reMarkable | serveur tiers impossible ; propriétaire |
-| Raccourcis Apple (Shortcuts + API REST) | faisable pour un power-user, mais mot de passe en clair dans le raccourci — viole C3 |
+| rmfakecloud web UI in Safari | no Share Sheet, re-login, degraded mobile UX |
+| Official reMarkable app | third-party server impossible; proprietary |
+| Apple Shortcuts (Shortcuts + REST API) | feasible for a power user, but password in plain text in the shortcut — violates C3 |
 
-Contribution nouvelle : premier client iOS natif pour l'API web rmfakecloud,
-protocole partagé avec Android/desktop via le crate commun.
+New contribution: first native iOS client for the rmfakecloud web API,
+protocol shared with Android/desktop via the common crate.
 
-## 4. Exigences
+## 4. Requirements
 
-### Fonctionnelles
+### Functional
 
-| ID | Exigence | Acceptation |
+| ID | Requirement | Acceptance |
 |---|---|---|
-| F1 | Share Extension PDF/EPUB (mono + multiple) | fichier partagé depuis Fichiers/Safari/Mail → dialog avec nom correct |
-| F2 | Choix du dossier destination | arbre serveur affiché ; `parent` correct vérifié côté serveur |
-| F3 | App conteneur : configuration | URL + identifiants + test connexion ; erreurs distinctes (401 / réseau / ATS) |
-| F4 | Session partagée app ↔ extension | App Group + Keychain partagé ; l'extension n'exige jamais de re-login si jeton valide |
-| F5 | Rapport d'erreur actionnable | échec nommé par fichier ; réessai possible |
+| F1 | PDF/EPUB Share Extension (single + multiple) | file shared from Files/Safari/Mail → dialog with correct name |
+| F2 | Destination folder choice | server tree displayed; correct `parent` verified server-side |
+| F3 | Container app: configuration | URL + credentials + connection test; distinct errors (401 / network / ATS) |
+| F4 | Shared session app ↔ extension | App Group + shared Keychain; extension never requires re-login if token valid |
+| F5 | Actionable error report | failure named per file; retry possible |
 
-### Non fonctionnelles
+### Non-functional
 
-- **S1** : aucun secret hors Keychain ; pas de logs contenant jeton/mot de passe.
-- **S2** : ATS par défaut ; HTTP uniquement via `NSAllowsLocalNetworking`
-  + opt-in UI (parité avec la politique Android).
-- **P1** : upload streaming ; extension conforme aux limites mémoire (H2).
-- Hors périmètre v1 : téléchargement, édition, multi-comptes, widget.
+- **S1**: no secret outside Keychain; no logs containing token/password.
+- **S2**: ATS by default; HTTP only via `NSAllowsLocalNetworking`
+  + UI opt-in (parity with Android policy).
+- **P1**: streaming upload; extension compliant with memory limits (H2).
+- Out of v1 scope: download, editing, multi-accounts, widget.
 
-## 5. Preuves de vérification prévues
+## 5. Planned verification evidence
 
-1. Tests XCTest de l'app conteneur contre rmfakecloud Docker (simulateur).
-2. Le crate est déjà couvert par ses propres tests (jalon `core-m1` de la
-   roadmap Android) — non redondés côté Swift.
-3. Test manuel scripté sur appareil : partage depuis Fichiers, Mail,
-   Safari ; fichier 200 Mo (H2) ; avion/latence (échec propre).
+1. Container app XCTest against rmfakecloud Docker (simulator).
+2. The crate is already covered by its own tests (Android roadmap milestone `core-m1`) — not duplicated on Swift side.
+3. Scripted manual test on device: share from Files, Mail,
+   Safari; 200 MB file (H2); airplane/latency (clean failure).
 
-## 6. Trois risques principaux et contre-normes
+## 6. Three main risks and counter-norms
 
-1. **Limite mémoire de l'extension** (impact fort, vraisemblance moyenne,
-   détection facile) — crash silencieux au-delà du quota. Réduction : H2
-   testée tôt (M2) ; repli = handoff vers l'app conteneur.
-2. **Chaîne de build Rust→XCFramework fragile** (impact moyen, vraisemblance
-   moyenne) — casse aux mises à jour Xcode. Réduction : versions épinglées,
-   build reproduit en CI macOS à chaque jalon.
-3. **Refus App Store** (impact fort, vraisemblance faible) — app « client
-   d'un serveur privé » parfois recalée pour « fonctionnalité minimale ».
-   Réduction : soumission TestFlight d'abord ; argumentaire open source ;
-   repli sideload (AltStore) documenté.
+1. **Extension memory limit** (high impact, medium
+   likelihood, easy detection) — silent crash beyond quota. Mitigation: H2
+   tested early (M2); fallback = handoff to container app.
+2. **Fragile Rust→XCFramework build chain** (medium impact, medium
+   likelihood) — breaks on Xcode updates. Mitigation: pinned versions,
+   build reproduced in macOS CI at each milestone.
+3. **App Store rejection** (high impact, low likelihood) — « client
+   for a private server » app sometimes rejected for « minimal functionality ».
+   Mitigation: TestFlight submission first; open source argument;
+   documented sideload fallback (AltStore).
 
-Contre-normes assumées : distribution App Store = canal propriétaire
-(écart au communalisme, imposé par la plateforme) ; compte développeur
-payant requis. Compensation : code GPL dans ce dépôt, parité fonctionnelle
-avec les canaux libres des autres plateformes ; réévaluation si le sideload
-UE devient praticable pour ce public.
+Accepted counter-norms: App Store distribution = proprietary channel
+(deviation from communalism, imposed by the platform); paid developer
+account required. Compensation: GPL code in this repo, functional parity
+with free channels on other platforms; re-evaluation if EU sideload
+becomes practical for this audience.
 
-## 7. Sources vérifiées
+## 7. Verified sources
 
-- Contrat API : source rmfakecloud lu 2026-07-16 + E2E Android du même jour.
-- UniFFI Swift bindings : documentation Mozilla (mozilla.github.io/uniffi-rs).
-- Limites mémoire des app extensions : documentation Apple (developer.apple.com,
-  App Extension Programming Guide) — chiffre exact à re-mesurer au jalon M2
-  (connaissance générale, pas de garantie contractuelle d'Apple).
-- ATS / NSAppTransportSecurity : documentation Apple vérifiable en ligne.
+- API contract: rmfakecloud source read 2026-07-16 + Android E2E same day.
+- UniFFI Swift bindings: Mozilla documentation (mozilla.github.io/uniffi-rs).
+- App extension memory limits: Apple documentation (developer.apple.com,
+  App Extension Programming Guide) — exact figure to be re-measured at milestone M2
+  (general knowledge, no contractual guarantee from Apple).
+- ATS / NSAppTransportSecurity: Apple documentation verifiable online.

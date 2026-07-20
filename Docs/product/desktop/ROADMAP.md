@@ -1,49 +1,50 @@
-# Roadmap — FkCloud Share Desktop (bissection progressive)
+# Roadmap — FkCloud Share Desktop (progressive bisection)
 
-Axe : **borne A** = rien → **borne B** = v1.0 signée, distribuée pour
-win-x64, mac-x64, mac-arm64. Pas minimal : jalon ≤ 1 semaine, vérification
-binaire. Chaque jalon = tag git.
+French: [ROADMAP.fr.md](ROADMAP.fr.md).
 
-## Passes de bissection
+Axis: **bound A** = nothing → **bound B** = v1.0 signed, distributed for
+win-x64, mac-x64, mac-arm64. Minimal step: milestone ≤ 1 week, binary
+verification. Each milestone = git tag.
 
-- **Passe 1 — bornes** : A (zéro code desktop) et B (v1.0 trois cibles).
-- **Passe 2 — milieu M** : *fenêtre Tauri qui envoie* — drag & drop d'un
-  PDF → dossier → upload vérifié serveur, sur l'OS de développement
-  (mac-arm64). Coupe l'espace : avant = socle Rust/CLI, après =
-  multi-plateforme, tray, packaging.
-- **Passe 3 — quarts** :
-  - A–M : *CLI de validation* — binaire `fkcloud-cli` (login, ls, put)
-    au-dessus du crate ; prouve le cœur sans UI. H1 webview testée ici
-    sur les 3 OS (page blanche + drop test).
-  - M–B : *trois cibles empaquetées* — msi + 2 dmg non signés, E2E CI vert
-    partout.
-- **Passe 4** : tray, file d'attente, signature — écarts ≤ 1 semaine, arrêt.
+## Bisection passes
 
-## Jalons (ordre grossier → fin)
+- **Pass 1 — bounds**: A (zero desktop code) and B (v1.0 three targets).
+- **Pass 2 — midpoint M**: *Tauri window that sends* — drag & drop of a
+  PDF → folder → server-verified upload, on the development OS
+  (mac-arm64). Splits the space: before = Rust/CLI core, after =
+  multi-platform, tray, packaging.
+- **Pass 3 — quarters**:
+  - A–M: *validation CLI* — `fkcloud-cli` binary (login, ls, put)
+    on top of the crate; proves the core without UI. H1 webview tested here
+    on all 3 OSes (blank page + drop test).
+  - M–B: *three packaged targets* — msi + 2 unsigned dmg, E2E CI green
+    everywhere.
+- **Pass 4**: tray, queue, signing — gaps ≤ 1 week, stop.
 
-| Tag | Jalon | Statut | Vérification binaire |
+## Milestones (rough order → end)
+
+| Tag | Milestone | Status | Binary verification |
 |---|---|---|---|
-| — | Borne A | Fait | `apps/desktop/` : README seul (état initial) |
-| `desktop-m1` | Quart A–M : `fkcloud-cli` | Fait | `fkcloud-cli` fonctionnel (login, ls, put, sync) ; tests core ok |
-| `desktop-m2` | **Milieu M** : fenêtre Tauri drag & drop | Fait | Fenêtre Tauri D&D, arbre de dossiers, création en ligne |
-| `desktop-m3` | Quart M–B : file d'attente & tray icon | Fait | File d'attente asynchrone unitaire (F3), systray icon, menu, dialogs native (F4) |
-| `desktop-v1.0` | Borne B : CI & publication | Fait | Paramètres (auto-démarrage, menu contextuel), tray icon glow actif, À propos signature, CI & publication |
+| — | Bound A | Done | `apps/desktop/`: README only (initial state) |
+| `desktop-m1` | Quarter A–M: `fkcloud-cli` | Done | functional `fkcloud-cli` (login, ls, put, sync); core tests ok |
+| `desktop-m2` | **Midpoint M**: Tauri window drag & drop | Done | Tauri window D&D, folder tree, inline creation |
+| `desktop-m3` | Quarter M–B: queue & tray icon | Done | async unit queue (F3), systray icon, menu, native dialogs (F4) |
+| `desktop-v1.0` | Bound B: CI & publication | Done | settings (auto-start, context menu), active tray icon glow, About signing, CI & publication |
 
-## Segments de risque
+## Risk segments
 
-Casse à `m3` → tester `m2` (milieu) d'abord ; moitié fautive en un essai.
-Le CLI `desktop-m1` reste dans le dépôt en permanence : c'est l'outil de
-bissection le plus rapide pour distinguer « bug du crate » de « bug de l'UI ».
+Breakage at `m3` → test `m2` (midpoint) first; faulty half in one trial.
+The `desktop-m1` CLI remains in the repo permanently: it is the fastest
+bisection tool to distinguish « crate bug » from « UI bug ».
 
-## Après B (backlog ordonné par version)
+## After B (ordered backlog by version)
 
-### Jalon v1.1 : Intégrations & Améliorations
-1. **Intégration KeePassXC** : Option permettant de stocker/récupérer les identifiants via le protocole local de KeePassXC (ou intégration D-Bus Secret Service sur Linux).
-2. **Vue bibliothèque** : Si H2 du PRD est confirmée par les retours utilisateurs.
-3. **Auto-update signé** (tauri-updater).
-4. **Cible Linux officielle** (AppImage/Flatpak) — avec engagement de QA complet.
+### Milestone v1.1: Integrations & Improvements
+1. **KeePassXC integration**: Option to store/retrieve credentials via KeePassXC local protocol (or D-Bus Secret Service integration on Linux).
+2. **Library view**: If PRD H2 is confirmed by user feedback.
+3. **Signed auto-update** (tauri-updater).
+4. **Official Linux target** (AppImage/Flatpak) — with full QA commitment.
 
-### Jalon v1.2 : Intégration Système Globale
-1. **Envoi via Clic Droit (Context Menu OS)** : Intégration dans le menu contextuel natif du gestionnaire de fichiers de l'OS (Explorateur Windows, Finder macOS, gestionnaires Linux type Nautilus/Dolphin) pour envoyer un PDF/EPUB directement via clic droit sans ouvrir l'interface principale.
-2. **`GET /ui/api/sync` post-upload** : Notification de synchronisation immédiate envoyée à la tablette.
-
+### Milestone v1.2: Global System Integration
+1. **Send via Right-Click (OS Context Menu)**: Integration into the OS file manager's native context menu (Windows Explorer, macOS Finder, Linux file managers such as Nautilus/Dolphin) to send a PDF/EPUB directly via right-click without opening the main interface.
+2. **`GET /ui/api/sync` post-upload**: Immediate sync notification sent to the tablet.
