@@ -18,8 +18,7 @@ License: [GPL-3.0-or-later](LICENSE). Not affiliated with reMarkable AS.
 - HTTPS enforced by default; plain HTTP requires an explicit opt-in
 - Password and session token encrypted with an AES-256-GCM key in the
   Android Keystore; `allowBackup` disabled so secrets never leave the device
-- Visual identity: "Registre libre" charter — see
-  [Docs/charte-graphique](../../Docs/charte-graphique/charte-graphique.md#3-registre-libre)
+- Visual identity: palette « Registre libre » (warm cream/dark surfaces, blue primary, thin-outline borders) — see app themes under `app/src/main/res/`
 - Zero trackers, zero proprietary dependencies — F-Droid friendly
 - Dependencies: AndroidX AppCompat, Material Components, Kotlin coroutines,
   OkHttp (all FOSS); WebView is part of the Android platform, no extra
@@ -56,7 +55,7 @@ cd android
 ## Usage
 
 1. Open **FkCloud Share** once: enter the server URL (e.g.
-   `https://rm-cloud.example.invalid`, pre-filled by default), your web UI
+   `https://rm-cloud.example.invalid`), your web UI
    username and password, then *Save & test connection*.
 2. In any app, share a PDF/EPUB → choose **FkCloud Share** → pick a folder
    → *Upload*.
