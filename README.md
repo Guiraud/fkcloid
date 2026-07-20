@@ -34,5 +34,3 @@ Projet développé par [Mehdi Guiraud](https://github.com/Guiraud).
 | Code | [github.com/Guiraud/fkcloid](https://github.com/Guiraud/fkcloid) |
 
 © 2026 Mehdi Guiraud – Tous droits réservés
-
-Client desktop : liens auteur dans Paramètres → À propos. Skill : [`skills/bottom-signature/SKILL.md`](skills/bottom-signature/SKILL.md).
